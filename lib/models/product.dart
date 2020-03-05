@@ -1,4 +1,6 @@
-class Product {
+import 'package:flutter/material.dart';
+
+class Product with ChangeNotifier {
   final String id;
   final String name;
   final double price;
@@ -7,11 +9,16 @@ class Product {
   bool isFav;
 
   Product({
-    this.id,
-    this.name,
-    this.price,
-    this.desc,
-    this.isFav,
-    this.imageUrl,
+    @required this.id,
+    @required this.name,
+    @required this.price,
+    @required this.desc,
+    this.isFav = false,
+    @required this.imageUrl,
   });
+
+  void toggleFav() {
+    isFav = !isFav;
+    notifyListeners();
+  }
 }

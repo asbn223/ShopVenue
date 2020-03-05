@@ -14,7 +14,7 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     void _selectedProduct(BuildContext context) {
       Navigator.pushNamed(context, ProductDetailScreen.routeName,
-          arguments: {'id': id, 'name': 'name'});
+          arguments: id);
     }
 
     return ClipRRect(
