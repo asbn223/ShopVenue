@@ -63,6 +63,10 @@ class Products with ChangeNotifier {
     return [..._productData]; //Needs to update SDK Version to 2.2.2
   }
 
+  List<Product> get favorites {
+    return _productData.where((product) => product.isFav).toList();
+  }
+
   Product findById(String id) {
     return _productData.firstWhere((product) => product.id == id);
   }

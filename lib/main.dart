@@ -4,13 +4,18 @@ import 'package:shopvenue_app/provider/product_provider.dart';
 import 'package:shopvenue_app/screens/product_detail_screen.dart';
 import 'package:shopvenue_app/screens/product_overview_screen.dart';
 
+import 'provider/cart_provider.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: Products(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: Products()),
+        ChangeNotifierProvider.value(value: Cart()),
+      ],
       child: MaterialApp(
         title: 'Shop Venue',
         debugShowCheckedModeBanner: false,

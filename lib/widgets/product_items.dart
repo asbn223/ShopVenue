@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:shopvenue_app/models/product.dart';
+import 'package:shopvenue_app/provider/cart_provider.dart';
 import 'package:shopvenue_app/screens/product_detail_screen.dart';
 
 class ProductItem extends StatelessWidget {
-  final String imageUrl, name, id;
-
-  ProductItem({
-    this.id,
-    this.name,
-    this.imageUrl,
-  });
-
   @override
   Widget build(BuildContext context) {
+    final selectedProduct = Provider.of<Product>(context, listen: false);
+    final cart = Provider.of<Cart>(context, listen: false);
+
     void _selectedProduct(BuildContext context) {
       Navigator.pushNamed(context, ProductDetailScreen.routeName,
-          arguments: id);
+          arguments: selectedProduct.id);
     }
 
     return ClipRRect(
@@ -22,21 +21,32 @@ class ProductItem extends StatelessWidget {
       child: GridTile(
           footer: GridTileBar(
             backgroundColor: Colors.black38,
-            leading: IconButton(
-              iconSize: 30,
-              icon: Icon(Icons.favorite_border),
-              onPressed: () {},
+            leading: Consumer<Product>(
+              builder: (ctx, builder, _) {
+                return IconButton(
+                  iconSize: 30,
+                  icon: selectedProduct.isFav
+                      ? Icon(Icons.favorite)
+                      : Icon(Icons.favorite_border),
+                  onPressed: () {
+                    selectedProduct.toggleFav();
+                  },
+                );
+              },
             ),
             trailing: IconButton(
               iconSize: 30,
-              icon: Icon(Icons.shopping_cart),
-              onPressed: () {},
+              icon: Icon(FontAwesomeIcons.shoppingBasket),
+              onPressed: () {
+                cart.addItemInCart(selectedProduct.id, selectedProduct.price,
+                    selectedProduct.name);
+              },
             ),
           ),
           header: GridTileBar(
             backgroundColor: Colors.black38,
             title: Text(
-              name,
+              selectedProduct.name,
               style: Theme.of(context)
                   .textTheme
                   .title
@@ -47,7 +57,7 @@ class ProductItem extends StatelessWidget {
           child: GestureDetector(
             onTap: () => _selectedProduct(context),
             child: Image.network(
-              imageUrl,
+              selectedProduct.imageUrl,
               fit: BoxFit.cover,
             ),
           )),
