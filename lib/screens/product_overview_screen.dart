@@ -5,6 +5,8 @@ import 'package:shopvenue_app/provider/cart_provider.dart';
 import 'package:shopvenue_app/widgets/badge.dart';
 import 'package:shopvenue_app/widgets/product_grid.dart';
 
+import 'cart_screen.dart';
+
 enum FilterOptions { Favorites, All }
 
 class ProductOverViewScreen extends StatefulWidget {
@@ -34,7 +36,8 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
               },
               child: IconButton(
                 icon: Icon(FontAwesomeIcons.shoppingBasket),
-                onPressed: () {},
+                onPressed: () =>
+                    Navigator.pushNamed(context, CartScreen.routeName),
               ),
             ),
             PopupMenuButton(
