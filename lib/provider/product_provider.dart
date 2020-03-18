@@ -45,7 +45,7 @@ class Products with ChangeNotifier {
       desc:
           "The phone comes with a 6.10-inch touchscreen display and an aspect ratio of 19:9. Samsung Galaxy S10 is powered by a 1.9GHz octa-core Samsung Exynos 9820 processor. It comes with 8GB of RAM. The Samsung Galaxy S10 runs Android 9.0 and is powered by a 3400mAh non-removable battery.",
       imageUrl:
-          "https://shop.galaxynp.com/wp-content/uploads/2019/06/SamsungGalaxyS105G-rear-1024x768.jpg",
+          "https://www.technobezz.com/files/uploads/2018/07/Samsung-Galaxy-S10.jpg",
       isFav: false,
     ),
     Product(

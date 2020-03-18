@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopvenue_app/provider/cart_provider.dart' show Cart;
+import 'package:shopvenue_app/provider/order_provider.dart';
 import 'package:shopvenue_app/widgets/cart_items.dart';
 
 class CartScreen extends StatelessWidget {
@@ -9,6 +10,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
+    final order = Provider.of<Orders>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text("Cart"),
@@ -34,12 +36,16 @@ class CartScreen extends StatelessWidget {
 //                    backgroundColor: Theme.of(context).accentColor,
                   ),
                   FlatButton(
-                    child: Text(
-                      'Checkout',
-                      style: TextStyle(fontSize: 16.0, fontFamily: "Oxanium"),
-                    ),
-                    onPressed: () {},
-                  )
+                      child: Text(
+                        'Checkout',
+                        style: TextStyle(fontSize: 16.0, fontFamily: "Oxanium"),
+                      ),
+                      onPressed: () {
+                        order.addOrder(
+                            cart.cartItems.values.toList(), cart.totalAmt);
+                        cart.clearFromCart();
+//                        Navigator.pushNamed(context, OrderScreen.routeName);
+                      })
                 ],
               ),
             ),

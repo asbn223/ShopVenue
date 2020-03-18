@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shopvenue_app/provider/cart_provider.dart';
 import 'package:shopvenue_app/widgets/badge.dart';
+import 'package:shopvenue_app/widgets/drawer.dart';
 import 'package:shopvenue_app/widgets/product_grid.dart';
 
 import 'cart_screen.dart';
@@ -10,6 +11,7 @@ import 'cart_screen.dart';
 enum FilterOptions { Favorites, All }
 
 class ProductOverViewScreen extends StatefulWidget {
+  static const String routeName = '/product_overview_screen';
   @override
   _ProductOverViewScreenState createState() => _ProductOverViewScreenState();
 }
@@ -64,6 +66,7 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
             ),
           ],
         ),
+        drawer: AppDrawer(),
         body: ProductGrid(
           showFav: showFav,
         ),
