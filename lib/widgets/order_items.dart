@@ -13,7 +13,8 @@ class _OrderItemState extends State<OrderItem> {
   bool _isExpanded = false;
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      padding: EdgeInsets.all(10.0),
       margin: EdgeInsets.all(10.0),
       child: ExpansionTile(
           title: Text("\$ ${widget.order.amount.toString()}"),

@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:shopvenue_app/provider/order_provider.dart';
 import 'package:shopvenue_app/provider/product_provider.dart';
 import 'package:shopvenue_app/screens/cart_screen.dart';
+import 'package:shopvenue_app/screens/edit_product_screen.dart';
 import 'package:shopvenue_app/screens/order_screen.dart';
 import 'package:shopvenue_app/screens/product_detail_screen.dart';
 import 'package:shopvenue_app/screens/product_overview_screen.dart';
+import 'package:shopvenue_app/screens/user_product_screen.dart';
 
 import 'provider/cart_provider.dart';
 
@@ -36,6 +38,8 @@ class MyApp extends StatelessWidget {
           ProductOverViewScreen.routeName: (context) => ProductOverViewScreen(),
           CartScreen.routeName: (context) => CartScreen(),
           OrderScreen.routeName: (context) => OrderScreen(),
+          UserProductScreen.routeName: (context) => UserProductScreen(),
+          EditProductScreen.routeName: (context) => EditProductScreen(),
         },
       ),
     );
