@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopvenue_app/provider/cart_provider.dart' show Cart;
 import 'package:shopvenue_app/provider/order_provider.dart';
+import 'package:shopvenue_app/screens/order_screen.dart';
 import 'package:shopvenue_app/widgets/cart_items.dart';
 
 class CartScreen extends StatelessWidget {
@@ -44,7 +45,7 @@ class CartScreen extends StatelessWidget {
                         order.addOrder(
                             cart.cartItems.values.toList(), cart.totalAmt);
                         cart.clearFromCart();
-//                        Navigator.pushNamed(context, OrderScreen.routeName);
+                        Navigator.pushNamed(context, OrderScreen.routeName);
                       })
                 ],
               ),

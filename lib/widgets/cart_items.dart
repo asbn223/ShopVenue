@@ -75,15 +75,17 @@ class CartItem extends StatelessWidget {
           child: ListTile(
             leading: CircleAvatar(
               radius: 30,
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: FittedBox(
-                  child: Image.network(
-                    cartData.imageUrl,
-//                  fit: BoxFit.cover,
-                  ),
-                ),
-              ),
+              backgroundImage: NetworkImage(cartData.imageUrl),
+              backgroundColor: Colors.transparent,
+              // child: Padding(
+              //   padding: const EdgeInsets.all(2.0),
+              //   child: FittedBox(
+              //     child: Image.network(
+              //       cartData.imageUrl,
+              //    fit: BoxFit.cover,
+              //     ),
+              //   ),
+              // ),
             ),
             title: Text(name),
             subtitle: Text('Total \$ ${price * quanity}'),

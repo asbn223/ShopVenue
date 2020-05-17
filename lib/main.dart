@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.green,
           fontFamily: "TradeWinds",
           textTheme: TextTheme(
-            title: TextStyle(fontFamily: 'Oxanium'),
+            headline6: TextStyle(fontFamily: 'Oxanium'),
           ),
         ),
         home: ProductOverViewScreen(),

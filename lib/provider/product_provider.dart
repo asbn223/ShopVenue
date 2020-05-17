@@ -18,7 +18,7 @@ class Products with ChangeNotifier {
       price: 1000,
       desc: "Premium Cotton T-Shirt",
       imageUrl:
-          "https://scontent.fktm8-1.fna.fbcdn.net/v/t1.0-9/46245129_2178591129050867_1617584155116175360_n.png?_nc_cat=110&_nc_sid=8024bb&_nc_ohc=tmlSik3prqIAX9OE3K4&_nc_ht=scontent.fktm8-1.fna&oh=ca17fce650324a77631e8834af90b479&oe=5E82A84C",
+          "https://images-na.ssl-images-amazon.com/images/I/61-TuCrKZ7L._UY550_.jpg",
       isFav: false,
     ),
     Product(
@@ -69,5 +69,26 @@ class Products with ChangeNotifier {
 
   Product findById(String id) {
     return _productData.firstWhere((product) => product.id == id);
+  }
+
+  //This method add new products in the list
+  void addProduct(Product product) {
+    final newProduct = Product(
+        id: DateTime.now().toString(),
+        name: product.name,
+        price: product.price,
+        desc: product.desc,
+        imageUrl: product.imageUrl);
+    _productData.add(newProduct);
+    notifyListeners();
+  }
+
+  //This function updates the current product
+  void updateProduct(String id, Product upProduct) {
+    final productIndex = _productData.indexWhere((prod) => prod.id == id);
+    if (productIndex >= 0) {
+      _productData[productIndex] = upProduct;
+      notifyListeners();
+    }
   }
 }

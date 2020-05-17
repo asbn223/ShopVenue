@@ -62,7 +62,7 @@ class ProductItem extends StatelessWidget {
               selectedProduct.name,
               style: Theme.of(context)
                   .textTheme
-                  .title
+                  .headline6
                   .copyWith(fontSize: 20, color: Colors.white),
               textAlign: TextAlign.center,
             ),

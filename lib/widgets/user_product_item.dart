@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shopvenue_app/screens/edit_product_screen.dart';
 
 class UserProductItem extends StatelessWidget {
-  final String title, imageUrl;
+  final String title, imageUrl, id;
 
-  UserProductItem({this.title, this.imageUrl});
+  UserProductItem({this.id, this.title, this.imageUrl});
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -19,11 +20,15 @@ class UserProductItem extends StatelessWidget {
             IconButton(
               color: Theme.of(context).accentColor,
               icon: Icon(FontAwesomeIcons.edit),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, EditProductScreen.routeName,
+                    arguments: id);
+              },
             ),
             IconButton(
               color: Colors.red,
               icon: Icon(FontAwesomeIcons.trashAlt),
+              onPressed: () {},
             ),
           ],
         ),
