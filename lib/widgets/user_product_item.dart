@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:shopvenue_app/provider/product_provider.dart';
 import 'package:shopvenue_app/screens/edit_product_screen.dart';
 
 class UserProductItem extends StatelessWidget {
@@ -28,7 +30,9 @@ class UserProductItem extends StatelessWidget {
             IconButton(
               color: Colors.red,
               icon: Icon(FontAwesomeIcons.trashAlt),
-              onPressed: () {},
+              onPressed: () {
+                Provider.of<Products>(context, listen: false).deleteProduct(id);
+              },
             ),
           ],
         ),

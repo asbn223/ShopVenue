@@ -61,7 +61,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
       return;
     }
     _form.currentState.save();
-    Provider.of<Products>(context, listen: false).addProduct(_editProduct);
+    if(_editProduct.id!=null){
+      Provider.of<Products>(context, listen: false).updateProduct(_editProduct.id,_editProduct);
+    }else{
+      Provider.of<Products>(context, listen: false).addProduct(_editProduct);
+    }
     Navigator.pop(context);
   }
 
@@ -88,7 +92,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Your Products"),
+        title: _editProduct.id==null?Text("Add Product"):Text("Edit Product"),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.check),

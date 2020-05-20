@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shopvenue_app/models/product.dart';
+import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   List<Product> _productData = [
@@ -72,7 +73,14 @@ class Products with ChangeNotifier {
   }
 
   //This method add new products in the list
-  void addProduct(Product product) {
+  void addProduct(Product product) async {
+    const url = 'https://shop-venue.firebaseio.com/products.json';
+    const url_1 = 'http://ip.jsontext.com/';
+
+    http.Response response = await http.get(url_1);
+
+    print(response.statusCode); 
+
     final newProduct = Product(
         id: DateTime.now().toString(),
         name: product.name,
@@ -90,5 +98,11 @@ class Products with ChangeNotifier {
       _productData[productIndex] = upProduct;
       notifyListeners();
     }
+  }
+
+  //This Function deleted the particular Product
+  void deleteProduct(String id){
+    _productData.removeWhere((prod)=>prod.id == id);
+    notifyListeners();
   }
 }
