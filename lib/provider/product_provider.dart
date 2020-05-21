@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shopvenue_app/models/product.dart';
 import 'package:http/http.dart' as http;
@@ -73,22 +75,38 @@ class Products with ChangeNotifier {
   }
 
   //This method add new products in the list
-  void addProduct(Product product) async {
+  Future<void> addProduct(Product product) async {
     const url = 'https://shop-venue.firebaseio.com/products.json';
-    const url_1 = 'http://ip.jsontext.com/';
+    // const url_1 = 'http://ip.jsontext.com/';
 
-    http.Response response = await http.get(url_1);
+    // http.Response response = await http.get(url_1);
 
-    print(response.statusCode); 
+    // print(response.statusCode);
+    try {
+      final response = await http.post(url,
+          body: json.encode({
+            'name': product.name,
+            'price': product.price,
+            'desc': product.desc,
+            'imageUrl': product.imageUrl,
+            'isFav': product.isFav,
+          })); //future gives a response after posting to the database
 
-    final newProduct = Product(
-        id: DateTime.now().toString(),
-        name: product.name,
-        price: product.price,
-        desc: product.desc,
-        imageUrl: product.imageUrl);
-    _productData.add(newProduct);
-    notifyListeners();
+      print(json.decode(response.body)['name']);
+      final newProduct = Product(
+          id: json.decode(response.body)['name'],
+          name: product.name,
+          price: product.price,
+          desc: product.desc,
+          imageUrl: product.imageUrl);
+      _productData.add(newProduct);
+      notifyListeners();
+    }
+    //If we get an error during added product it will catch the error
+    catch (error) {
+      print(error);
+      throw (error);
+    }
   }
 
   //This function updates the current product
@@ -101,8 +119,8 @@ class Products with ChangeNotifier {
   }
 
   //This Function deleted the particular Product
-  void deleteProduct(String id){
-    _productData.removeWhere((prod)=>prod.id == id);
+  void deleteProduct(String id) {
+    _productData.removeWhere((prod) => prod.id == id);
     notifyListeners();
   }
 }
