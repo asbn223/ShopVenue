@@ -108,7 +108,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (_isInit) {
       final String productId = ModalRoute.of(context).settings.arguments;
       if (productId != null) {
-        _editProduct = Provider.of<Products>(context).findById(productId);
+        _editProduct = Provider.of<Products>(context, listen:false).findById(productId);
         initValue = {
           'name': _editProduct.name,
           'price': _editProduct.price.toString(),

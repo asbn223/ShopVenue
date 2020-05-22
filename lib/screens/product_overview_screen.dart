@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shopvenue_app/provider/cart_provider.dart';
+import 'package:shopvenue_app/provider/product_provider.dart';
 import 'package:shopvenue_app/widgets/badge.dart';
 import 'package:shopvenue_app/widgets/drawer.dart';
 import 'package:shopvenue_app/widgets/product_grid.dart';
@@ -18,6 +19,24 @@ class ProductOverViewScreen extends StatefulWidget {
 
 class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
   bool showFav = false;
+  bool _isInit = true;
+  bool _isLoading = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context).fetchProductData().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+    }
+    _isInit = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +86,13 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
           ],
         ),
         drawer: AppDrawer(),
-        body: ProductGrid(
-          showFav: showFav,
-        ),
+        body: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : ProductGrid(
+                showFav: showFav,
+              ),
       ),
     );
   }
