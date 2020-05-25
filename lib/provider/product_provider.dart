@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shopvenue_app/expection/http_expection.dart';
 import 'package:shopvenue_app/models/product.dart';
 
 class Products with ChangeNotifier {
@@ -139,17 +140,50 @@ class Products with ChangeNotifier {
   }
 
   //This function updates the current product
-  void updateProduct(String id, Product upProduct) {
+  Future<void> updateProduct(String id, Product upProduct) async {
     final productIndex = _productData.indexWhere((prod) => prod.id == id);
-    if (productIndex >= 0) {
-      _productData[productIndex] = upProduct;
-      notifyListeners();
+    try {
+      if (productIndex >= 0) {
+        final url = 'https://shop-venue.firebaseio.com/products/$id.json';
+        await http.patch(url,
+            body: json.encode({
+              'name': upProduct.name,
+              'price': upProduct.price,
+              'desc': upProduct.desc,
+              'imageUrl': upProduct.imageUrl,
+              'isFav': upProduct.isFav,
+            }));
+        _productData[productIndex] = upProduct;
+        notifyListeners();
+      }
+    } catch (error) {
+      print(error.message);
+      throw (error);
     }
   }
 
   //This Function deleted the particular Product
-  void deleteProduct(String id) {
-    _productData.removeWhere((prod) => prod.id == id);
+  Future<void> deleteProduct(String id) async {
+    final url = 'https://shop-venue.firebaseio.com/products/$id.json';
+    final existingProductIndex =
+        _productData.indexWhere((prod) => prod.id == id);
+    var existingProduct = _productData[existingProductIndex];
+    _productData.removeAt(existingProductIndex);
     notifyListeners();
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode >= 400) {
+        _productData.insert(existingProductIndex, existingProduct);
+        notifyListeners();
+        throw HttpExpection("Couldn't delete product!");
+      } else {
+        existingProduct = null;
+      }
+    } catch (error) {
+      _productData.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+      throw HttpExpection("Couldn't delete product!");
+    }
   }
 }

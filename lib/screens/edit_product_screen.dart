@@ -68,8 +68,28 @@ class _EditProductScreenState extends State<EditProductScreen> {
     });
 
     if (_editProduct.id != null) {
-      Provider.of<Products>(context, listen: false)
-          .updateProduct(_editProduct.id, _editProduct);
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .updateProduct(_editProduct.id, _editProduct);
+      } catch (error) {
+        await showDialog(
+            context: context,
+            builder: (ctx) {
+              return AlertDialog(
+                title: Text("Error Occured"),
+                content:
+                    Text("Something has occured! Product couldn't be updated"),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Ok"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+              );
+            });
+      }
     } else {
       try {
         await Provider.of<Products>(context, listen: false)
@@ -92,14 +112,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ],
               );
             });
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-
-        Navigator.pop(context);
       }
     }
+    setState(() {
+      _isLoading = false;
+    });
+
+    Navigator.pop(context);
   }
 
   @override
@@ -108,7 +127,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (_isInit) {
       final String productId = ModalRoute.of(context).settings.arguments;
       if (productId != null) {
-        _editProduct = Provider.of<Products>(context, listen:false).findById(productId);
+        _editProduct =
+            Provider.of<Products>(context, listen: false).findById(productId);
         initValue = {
           'name': _editProduct.name,
           'price': _editProduct.price.toString(),
