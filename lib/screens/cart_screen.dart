@@ -11,7 +11,6 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
-    final order = Provider.of<Orders>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text("Cart"),
@@ -36,17 +35,7 @@ class CartScreen extends StatelessWidget {
                     label: Text("\$ ${cart.totalAmt.toStringAsFixed(1)}"),
 //                    backgroundColor: Theme.of(context).accentColor,
                   ),
-                  FlatButton(
-                      child: Text(
-                        'Checkout',
-                        style: TextStyle(fontSize: 16.0, fontFamily: "Oxanium"),
-                      ),
-                      onPressed: () {
-                        order.addOrder(
-                            cart.cartItems.values.toList(), cart.totalAmt);
-                        cart.clearFromCart();
-                        Navigator.pushNamed(context, OrderScreen.routeName);
-                      })
+                  OrderButton(cart),
                 ],
               ),
             ),
@@ -68,5 +57,63 @@ class CartScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  final Cart cart;
+  OrderButton(this.cart);
+
+  @override
+  _OrderButtonState createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final order = Provider.of<Orders>(context, listen: false);
+
+    return FlatButton(
+        child: _isLoading
+            ? CircularProgressIndicator()
+            : Text(
+                'Checkout',
+                style: TextStyle(fontSize: 16.0, fontFamily: "Oxanium"),
+              ),
+        onPressed: widget.cart.itemInCart == 0
+            ? null
+            : () async {
+                setState(() {
+                  _isLoading = false;
+                });
+                if (widget.cart.itemInCart != 0) {
+                  await order.addOrder(widget.cart.cartItems.values.toList(),
+                      widget.cart.totalAmt);
+                  widget.cart.clearFromCart();
+                  Navigator.pushNamed(context, OrderScreen.routeName);
+                } else {
+                  await showDialog(
+                      context: context,
+                      builder: (ctx) {
+                        return AlertDialog(
+                          title: Text("Error Occured"),
+                          content: Text("Your Cart is Empty"),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text("Ok"),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            )
+                          ],
+                        );
+                      });
+                }
+                setState(() {
+                  _isLoading = true;
+                });
+              });
   }
 }

@@ -38,6 +38,10 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
     _isInit = false;
   }
 
+  Future<void> _refreshedProducts(BuildContext context) async {
+    await Provider.of<Products>(context, listen: false).fetchProductData();
+  }
+
   @override
   Widget build(BuildContext context) {
 //    final productData = Provider.of<Products>(context).productData;
@@ -86,13 +90,16 @@ class _ProductOverViewScreenState extends State<ProductOverViewScreen> {
           ],
         ),
         drawer: AppDrawer(),
-        body: _isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : ProductGrid(
-                showFav: showFav,
-              ),
+        body: RefreshIndicator(
+          onRefresh: () => _refreshedProducts(context),
+          child: _isLoading
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ProductGrid(
+                  showFav: showFav,
+                ),
+        ),
       ),
     );
   }

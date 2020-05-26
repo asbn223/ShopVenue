@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shopvenue_app/provider/order_provider.dart' as OI;
 
 class OrderItem extends StatefulWidget {
@@ -18,6 +19,9 @@ class _OrderItemState extends State<OrderItem> {
       margin: EdgeInsets.all(10.0),
       child: ExpansionTile(
           title: Text("\$ ${widget.order.amount.toString()}"),
+          subtitle: Text(
+            DateFormat.yMMMEd().format(widget.order.dateTime),
+          ),
           children: widget.order.products
               .map((prod) => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

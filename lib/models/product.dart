@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shopvenue_app/expection/http_expection.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -17,8 +21,22 @@ class Product with ChangeNotifier {
     @required this.imageUrl,
   });
 
-  void toggleFav() {
+  Future<void> toggleFav() async {
+    final backUPfav = isFav;
     isFav = !isFav;
     notifyListeners();
+    final url = 'https://shop-venue.firebaseio.com/products/$id.json';
+
+    try {
+      final res = await http.patch(url, body: json.encode({'isFav': isFav}));
+      if (res.statusCode >= 400) {
+        isFav = backUPfav;
+        notifyListeners();
+      }
+    } catch (error) {
+      isFav = backUPfav;
+      notifyListeners();
+      throw HttpExpection("Couldn't mark as favorites!");
+    }
   }
 }
