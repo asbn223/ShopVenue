@@ -6,6 +6,8 @@ import 'package:shopvenue_app/expection/http_expection.dart';
 import 'package:shopvenue_app/models/product.dart';
 
 class Products with ChangeNotifier {
+  final String authToken, userId;
+
   List<Product> _productData = [
     // Product(
     //   id: "P001",
@@ -63,6 +65,8 @@ class Products with ChangeNotifier {
     // ),
   ];
 
+  Products(this.authToken, this.userId, this._productData);
+
   List<Product> get productData {
     return [..._productData]; //Needs to update SDK Version to 2.2.2
   }
@@ -77,7 +81,8 @@ class Products with ChangeNotifier {
 
   //This method add new products in the list
   Future<void> addProduct(Product product) async {
-    const url = 'https://shop-venue.firebaseio.com/products.json';
+    final url =
+        'https://shop-venue.firebaseio.com/products.json?auth=$authToken';
     // const url_1 = 'http://ip.jsontext.com/';
 
     // http.Response response = await http.get(url_1);
@@ -112,10 +117,14 @@ class Products with ChangeNotifier {
 
   //This function fetches the products from firebase
   Future<void> fetchProductData() async {
-    const url = 'https://shop-venue.firebaseio.com/products.json';
+    final url =
+        'https://shop-venue.firebaseio.com/products.json?auth=$authToken';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      final favResponse = await http.get(
+          'https://shop-venue.firebaseio.com/userFav/$userId.json?auth=$authToken');
+      final favData = json.decode(favResponse.body);
       final List<Product> productGot = [];
       // print(extractedData.toString());
       extractedData.forEach((prodId, prodData) {
@@ -126,7 +135,7 @@ class Products with ChangeNotifier {
             desc: prodData['desc'],
             price: double.parse(prodData['price'].toString()),
             imageUrl: prodData['imageUrl'],
-            isFav: prodData['isFav'],
+            isFav: favData == null ? false : favData[prodId] ?? false,
           ),
         );
       });
@@ -144,14 +153,14 @@ class Products with ChangeNotifier {
     final productIndex = _productData.indexWhere((prod) => prod.id == id);
     try {
       if (productIndex >= 0) {
-        final url = 'https://shop-venue.firebaseio.com/products/$id.json';
+        final url =
+            'https://shop-venue.firebaseio.com/products/$id.json?auth=$authToken';
         await http.patch(url,
             body: json.encode({
               'name': upProduct.name,
               'price': upProduct.price,
               'desc': upProduct.desc,
               'imageUrl': upProduct.imageUrl,
-              'isFav': upProduct.isFav,
             }));
         _productData[productIndex] = upProduct;
         notifyListeners();
@@ -164,7 +173,8 @@ class Products with ChangeNotifier {
 
   //This Function deleted the particular Product
   Future<void> deleteProduct(String id) async {
-    final url = 'https://shop-venue.firebaseio.com/products/$id.json';
+    final url =
+        'https://shop-venue.firebaseio.com/products/$id.json?auth=$authToken';
     final existingProductIndex =
         _productData.indexWhere((prod) => prod.id == id);
     var existingProduct = _productData[existingProductIndex];

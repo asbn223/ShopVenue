@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shopvenue_app/models/product.dart';
+import 'package:shopvenue_app/provider/auth_provider.dart';
 import 'package:shopvenue_app/provider/cart_provider.dart';
 import 'package:shopvenue_app/screens/product_detail_screen.dart';
 
 class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<Auth>(context);
+
     final selectedProduct = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
 
@@ -29,7 +32,7 @@ class ProductItem extends StatelessWidget {
                       ? Icon(Icons.favorite)
                       : Icon(Icons.favorite_border),
                   onPressed: () {
-                    selectedProduct.toggleFav();
+                    selectedProduct.toggleFav(authToken: auth.token, userId: auth.userId);
                   },
                 );
               },

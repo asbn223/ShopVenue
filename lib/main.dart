@@ -20,31 +20,44 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: Products()),
         ChangeNotifierProvider.value(value: Auth()),
-        ChangeNotifierProvider.value(value: Cart()),
-        ChangeNotifierProvider.value(value: Orders()),
-      ],
-      child: MaterialApp(
-        title: 'Shop Venue',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.green,
-          fontFamily: "TradeWinds",
-          textTheme: TextTheme(
-            headline6: TextStyle(fontFamily: 'Oxanium'),
-          ),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          update: (BuildContext context, Auth auth, Products preProducts) {
+            return Products(
+                auth.token, auth.userId, preProducts == null ? [] : preProducts.productData);
+          },
         ),
-        home: AuthScreen(),
-        routes: {
-          ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
-          ProductOverViewScreen.routeName: (context) => ProductOverViewScreen(),
-          CartScreen.routeName: (context) => CartScreen(),
-          OrderScreen.routeName: (context) => OrderScreen(),
-          UserProductScreen.routeName: (context) => UserProductScreen(),
-          EditProductScreen.routeName: (context) => EditProductScreen(),
-        },
-      ),
+        ChangeNotifierProxyProvider<Auth, Orders>(
+          update: (BuildContext context, Auth auth, Orders preOrders) {
+            return Orders(
+                auth.token, preOrders == null ? [] : preOrders.orders);
+          },
+        ),
+        ChangeNotifierProvider.value(value: Cart()),
+      ],
+      child: Consumer<Auth>(builder: (context, auth, _) {
+        return MaterialApp(
+          title: 'Shop Venue',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.green,
+            fontFamily: "TradeWinds",
+            textTheme: TextTheme(
+              headline6: TextStyle(fontFamily: 'Oxanium'),
+            ),
+          ),
+          home: auth.isLoggedIn ? ProductOverViewScreen() : AuthScreen(),
+          routes: {
+            ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
+            ProductOverViewScreen.routeName: (context) =>
+                ProductOverViewScreen(),
+            CartScreen.routeName: (context) => CartScreen(),
+            OrderScreen.routeName: (context) => OrderScreen(),
+            UserProductScreen.routeName: (context) => UserProductScreen(),
+            EditProductScreen.routeName: (context) => EditProductScreen(),
+          },
+        );
+      }),
     );
   }
 }

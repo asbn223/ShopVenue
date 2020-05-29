@@ -21,14 +21,15 @@ class Product with ChangeNotifier {
     @required this.imageUrl,
   });
 
-  Future<void> toggleFav() async {
+  Future<void> toggleFav({String authToken, String userId}) async {
     final backUPfav = isFav;
     isFav = !isFav;
     notifyListeners();
-    final url = 'https://shop-venue.firebaseio.com/products/$id.json';
+    final url =
+        'https://shop-venue.firebaseio.com/userFav/$userId/$id.json?auth=$authToken';
 
     try {
-      final res = await http.patch(url, body: json.encode({'isFav': isFav}));
+      final res = await http.put(url, body: json.encode(isFav));
       if (res.statusCode >= 400) {
         isFav = backUPfav;
         notifyListeners();
