@@ -9,6 +9,7 @@ import 'package:shopvenue_app/screens/edit_product_screen.dart';
 import 'package:shopvenue_app/screens/order_screen.dart';
 import 'package:shopvenue_app/screens/product_detail_screen.dart';
 import 'package:shopvenue_app/screens/product_overview_screen.dart';
+import 'package:shopvenue_app/screens/splash_screen.dart';
 import 'package:shopvenue_app/screens/user_product_screen.dart';
 
 import 'provider/cart_provider.dart';
@@ -46,7 +47,15 @@ class MyApp extends StatelessWidget {
               headline6: TextStyle(fontFamily: 'Oxanium'),
             ),
           ),
-          home: auth.isLoggedIn ? ProductOverViewScreen() : AuthScreen(),
+          home: auth.isLoggedIn
+              ? ProductOverViewScreen()
+              : FutureBuilder(
+                  future: auth.autoLogin(),
+                  builder: (context, authResult) =>
+                      authResult.connectionState == ConnectionState.waiting
+                          ? SplashScreen()
+                          : AuthScreen(),
+                ),
           routes: {
             ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
             ProductOverViewScreen.routeName: (context) =>

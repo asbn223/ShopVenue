@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopvenue_app/expection/http_expection.dart';
 
 class Auth with ChangeNotifier {
@@ -53,6 +54,16 @@ class Auth with ChangeNotifier {
       );
       autoLogOut();
       notifyListeners();
+
+//      Initialized Shared Preferences
+      final prefs = await SharedPreferences.getInstance();
+      final userData = json.encode({
+        'token': _token,
+        'userId': _userId,
+        'expiryDate': _expiryDate.toIso8601String(),
+      });
+
+      prefs.setString('userData', userData);
     } catch (error) {
       throw (error);
     }
@@ -66,7 +77,7 @@ class Auth with ChangeNotifier {
     return _auth(email, password, 'signInWithPassword');
   }
 
-  void logOut() {
+  Future<void> logOut() async {
     _token = null;
     _expiryDate = null;
     _userId = null;
@@ -74,6 +85,10 @@ class Auth with ChangeNotifier {
       _authTimer.cancel();
       _authTimer = null;
     }
+
+//    Clear Data in Shared Preferencs value
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
     notifyListeners();
   }
 
@@ -84,5 +99,24 @@ class Auth with ChangeNotifier {
     }
     final timeToExpire = _expiryDate.difference(DateTime.now()).inSeconds;
     _authTimer = Timer(Duration(seconds: timeToExpire), logOut);
+  }
+
+  Future<void> autoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey('userData')) {
+      return false;
+    }
+    final extractedDate =
+        json.decode(prefs.getString('userData')) as Map<String, Object>;
+    final expiryDate = DateTime.parse(extractedDate['expiryDate']);
+    if (expiryDate.isBefore(DateTime.now())) {
+      return false;
+    }
+    _token = extractedDate['token'];
+    _userId = extractedDate['userId'];
+    _expiryDate = expiryDate;
+    notifyListeners();
+    autoLogOut();
+    return true;
   }
 }
