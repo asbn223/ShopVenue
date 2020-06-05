@@ -147,7 +147,6 @@ class Products with ChangeNotifier {
       notifyListeners();
       // print(productData);
     } catch (error) {
-      print(error.message);
       throw (error);
     }
   }
@@ -170,7 +169,6 @@ class Products with ChangeNotifier {
         notifyListeners();
       }
     } catch (error) {
-      print(error.message);
       throw (error);
     }
   }

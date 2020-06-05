@@ -32,7 +32,8 @@ class ProductItem extends StatelessWidget {
                       ? Icon(Icons.favorite)
                       : Icon(Icons.favorite_border),
                   onPressed: () {
-                    selectedProduct.toggleFav(authToken: auth.token, userId: auth.userId);
+                    selectedProduct.toggleFav(
+                        authToken: auth.token, userId: auth.userId);
                   },
                 );
               },
@@ -74,10 +75,12 @@ class ProductItem extends StatelessWidget {
             onTap: () => _selectedProduct(context),
             child: Hero(
               tag: 'product${selectedProduct.id}',
-              child: Image.network(
-                selectedProduct.imageUrl,
-                fit: BoxFit.cover,
-              ),
+              child: FadeInImage(
+                  placeholder: AssetImage('assets/placeholder.png'),
+                  image: NetworkImage(
+                    selectedProduct.imageUrl,
+                  ),
+                  fit: BoxFit.cover),
             ),
           )),
     );

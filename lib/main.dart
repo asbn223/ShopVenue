@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopvenue_app/helper/custom_route.dart';
 import 'package:shopvenue_app/provider/auth_provider.dart';
 import 'package:shopvenue_app/provider/order_provider.dart';
 import 'package:shopvenue_app/provider/product_provider.dart';
@@ -46,6 +47,12 @@ class MyApp extends StatelessWidget {
             textTheme: TextTheme(
               headline6: TextStyle(fontFamily: 'Oxanium'),
             ),
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: CustomPageTransitionBuilder(),
+                TargetPlatform.iOS: CustomPageTransitionBuilder(),
+              },
+            ),
           ),
           home: auth.isLoggedIn
               ? ProductOverViewScreen()
@@ -57,6 +64,7 @@ class MyApp extends StatelessWidget {
                           : AuthScreen(),
                 ),
           routes: {
+            '/': (context) => ProductDetailScreen(),
             ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
             ProductOverViewScreen.routeName: (context) =>
                 ProductOverViewScreen(),

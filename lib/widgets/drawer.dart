@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shopvenue_app/helper/custom_route.dart';
 import 'package:shopvenue_app/provider/auth_provider.dart';
 import 'package:shopvenue_app/screens/order_screen.dart';
 import 'package:shopvenue_app/screens/product_overview_screen.dart';
@@ -31,14 +32,25 @@ class AppDrawer extends StatelessWidget {
             leading: Icon(FontAwesomeIcons.creditCard),
             title: Text('Orders'),
             onTap: () =>
-                Navigator.pushReplacementNamed(context, OrderScreen.routeName),
+//                Navigator.pushReplacementNamed(context, OrderScreen.routeName),
+                Navigator.of(context).pushReplacement(
+              CustomRoute(
+                builder: (context) => OrderScreen(),
+              ),
+            ),
           ),
           Divider(),
           ListTile(
             leading: Icon(FontAwesomeIcons.edit),
             title: Text('Manage Your Products'),
-            onTap: () => Navigator.pushReplacementNamed(
-                context, UserProductScreen.routeName),
+            onTap: () =>
+                /*Navigator.pushReplacementNamed(
+                context, UserProductScreen.routeName), */
+                Navigator.of(context).pushReplacement(
+              CustomRoute(
+                builder: (context) => UserProductScreen(),
+              ),
+            ),
           ),
           Divider(),
           ListTile(
