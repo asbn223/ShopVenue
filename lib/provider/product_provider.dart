@@ -184,7 +184,7 @@ class Products with ChangeNotifier {
     notifyListeners();
 
     try {
-      final response = await http.get(url);
+      final response = await http.delete(url);
       if (response.statusCode >= 400) {
         _productData.insert(existingProductIndex, existingProduct);
         notifyListeners();

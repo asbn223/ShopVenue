@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopvenue_app/expection/http_expection.dart';
 import 'package:shopvenue_app/provider/auth_provider.dart';
+import 'package:shopvenue_app/screens/product_overview_screen.dart';
 
 enum AuthMode { Signup, Login }
 
 class AuthScreen extends StatelessWidget {
-  static const routeName = '/auth';
+  static String routeName = '/auth';
 
   @override
   Widget build(BuildContext context) {
@@ -167,13 +168,19 @@ class _AuthCardState extends State<AuthCard>
     });
     try {
       if (_authMode == AuthMode.Login) {
-        await Provider.of<Auth>(context, listen: false)
-            .login(_authData['email'], _authData['password']);
+        await Provider.of<Auth>(context, listen: false).login(
+          _authData['email'],
+          _authData['password'],
+        );
       } else {
         // Sign user up
         await Provider.of<Auth>(context, listen: false)
             .signUp(_authData['email'], _authData['password']);
       }
+      Navigator.pushReplacementNamed(
+        context,
+        ProductOverViewScreen.routeName,
+      );
     } on HttpExpection catch (error) {
       var errorMessage = 'Authenciation Failed';
       if (error.toString().contains("EMAIL_EXITS")) {

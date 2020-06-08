@@ -101,7 +101,7 @@ class Auth with ChangeNotifier {
     _authTimer = Timer(Duration(seconds: timeToExpire), logOut);
   }
 
-  Future<void> autoLogin() async {
+  Future<bool> autoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) {
       return false;

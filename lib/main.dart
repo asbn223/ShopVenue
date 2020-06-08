@@ -1,3 +1,4 @@
+import 'package:flare_splash_screen/flare_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopvenue_app/helper/custom_route.dart';
@@ -10,19 +11,18 @@ import 'package:shopvenue_app/screens/edit_product_screen.dart';
 import 'package:shopvenue_app/screens/order_screen.dart';
 import 'package:shopvenue_app/screens/product_detail_screen.dart';
 import 'package:shopvenue_app/screens/product_overview_screen.dart';
-import 'package:shopvenue_app/screens/splash_screen.dart';
 import 'package:shopvenue_app/screens/user_product_screen.dart';
 
 import 'provider/cart_provider.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(SplashClass());
 
-class MyApp extends StatelessWidget {
+class SplashClass extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: Auth()),
+        ChangeNotifierProvider(create: (_) => Auth()),
         ChangeNotifierProxyProvider<Auth, Products>(
           update: (BuildContext context, Auth auth, Products preProducts) {
             return Products(auth.token, auth.userId,
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
                 preOrders == null ? [] : preOrders.orders);
           },
         ),
-        ChangeNotifierProvider.value(value: Cart()),
+        ChangeNotifierProvider(create: (_) => Cart()),
       ],
       child: Consumer<Auth>(builder: (context, auth, _) {
         return MaterialApp(
@@ -54,17 +54,9 @@ class MyApp extends StatelessWidget {
               },
             ),
           ),
-          home: auth.isLoggedIn
-              ? ProductOverViewScreen()
-              : FutureBuilder(
-                  future: auth.autoLogin(),
-                  builder: (context, authResult) =>
-                      authResult.connectionState == ConnectionState.waiting
-                          ? SplashScreen()
-                          : AuthScreen(),
-                ),
+          home: SplashBetween(),
           routes: {
-            '/': (context) => ProductDetailScreen(),
+            AuthScreen.routeName: (context) => AuthScreen(),
             ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
             ProductOverViewScreen.routeName: (context) =>
                 ProductOverViewScreen(),
@@ -75,6 +67,47 @@ class MyApp extends StatelessWidget {
           },
         );
       }),
+    );
+  }
+}
+
+class SplashBetween extends StatefulWidget {
+  @override
+  _SplashBetweenState createState() => _SplashBetweenState();
+}
+
+class _SplashBetweenState extends State<SplashBetween> {
+  bool isInit = true;
+  bool isLoggedIn = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (isInit) {
+      checkLogin();
+    }
+    isInit = false;
+  }
+
+  void checkLogin() async {
+    isLoggedIn = await Provider.of<Auth>(context, listen: false).autoLogin();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SplashScreen.navigate(
+        name: 'assets/Trim.flr',
+        backgroundColor: Colors.blueGrey,
+        startAnimation: 'Untitled',
+        loopAnimation: 'Untitled',
+        until: () => Future.delayed(
+          Duration(seconds: 3),
+        ),
+        fit: BoxFit.cover,
+        alignment: Alignment.center,
+        next: (_) => isLoggedIn ? ProductOverViewScreen() : AuthScreen(),
+      ),
     );
   }
 }

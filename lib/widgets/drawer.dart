@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shopvenue_app/helper/custom_route.dart';
 import 'package:shopvenue_app/provider/auth_provider.dart';
+import 'package:shopvenue_app/screens/auth_screen.dart';
 import 'package:shopvenue_app/screens/order_screen.dart';
 import 'package:shopvenue_app/screens/product_overview_screen.dart';
 import 'package:shopvenue_app/screens/user_product_screen.dart';
@@ -58,8 +59,8 @@ class AppDrawer extends StatelessWidget {
             title: Text('Log Out'),
             onTap: () async {
               Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed('/');
               await Provider.of<Auth>(context, listen: false).logOut();
+              Navigator.of(context).pushReplacementNamed(AuthScreen.routeName);
             },
           ),
         ],
